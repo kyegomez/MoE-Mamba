@@ -9,7 +9,7 @@ Implementation of MoE Mamba from the paper: "MoE-Mamba: Efficient Selective Stat
 ## Install
 
 ```bash
-pip install -e .
+pip install moe-mamba
 ```
 
 # Usage
