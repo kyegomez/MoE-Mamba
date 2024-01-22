@@ -25,9 +25,8 @@ classifiers = [
 python = "^3.6"
 swarms = "*"
 zetascale = "*"
-
-[tool.poetry.dev-dependencies]
-# Add development dependencies here
+torch = "*"
+einops = "*"
 
 
 [tool.poetry.group.lint.dependencies]
