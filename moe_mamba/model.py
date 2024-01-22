@@ -1,6 +1,5 @@
 import torch
 import torch.nn.functional as F
-from swarms_torch import SwitchMoE
 from torch import Tensor, nn
 from zeta.nn import FeedForward, MambaBlock, RMSNorm
 

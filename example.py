@@ -23,4 +23,4 @@ model = MoEMamba(
 out = model(x)
 
 # Print the shape of the output tensor
-print(out.shape)
+print(out)
