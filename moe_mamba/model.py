@@ -4,6 +4,22 @@ from zeta.nn import RMSNorm, MambaBlock
 from swarms_torch import SwitchMoE
 
 class MoEMambaBlock(nn.Module):
+    """
+    MoEMambaBlock is a module that combines MambaBlock and SwitchMoE layers.
+    
+    Args:
+        dim (int): The input dimension.
+        depth (int): The number of MambaBlock layers.
+        d_state (int): The dimension of the state.
+        causal (bool, optional): Whether to use causal attention. Defaults to True.
+        dropout (float, optional): The dropout rate. Defaults to 0.1.
+        shared_qk (bool, optional): Whether to share the query and key projections. Defaults to True.
+        exact_window_size (bool, optional): Whether to use exact window size for attention. Defaults to False.
+        heads (int, optional): The number of attention heads. Defaults to None.
+        dim_head (int, optional): The dimension of each attention head. Defaults to None.
+        m_expand (int, optional): The expansion factor for the hidden dimension. Defaults to 4.
+        num_experts (int, optional): The number of experts in the SwitchMoE layer. Defaults to 4.
+    """
     def __init__(
         self,
         dim,
@@ -42,7 +58,6 @@ class MoEMambaBlock(nn.Module):
                     dim=dim,
                     depth=depth,
                     d_state=d_state,
-                    expand=m_expand,
                     *args,
                     **kwargs,
                 )
@@ -54,26 +69,25 @@ class MoEMambaBlock(nn.Module):
                     hidden_dim=self.hidden_dim,
                     output_dim=dim,
                     num_experts=num_experts,
-                    mult=m_expand,
                 )
             )
 
     def forward(self, x):
-        for attn, moe in zip(self.layers, self.ffn_layers):
-            x, _ = moe(x)
-            x = attn(x, x, x) + x
+        """
+        Forward pass of the MoEMambaBlock module.
+        
+        Args:
+            x (torch.Tensor): The input tensor.
+        
+        Returns:
+            torch.Tensor: The output tensor.
+        """
+        for mamba, moe in zip(self.layers, self.ffn_layers):
+            x = mamba(x)
             x, _ = moe(x)
         return x
 
-x = torch.randn(1, 10, 512)
-model = MoEMambaBlock(
-    dim=512,
-    depth=6,
-    d_state=128,
-    expand=4,
-    num_experts=4,
-)
-model(x).shape
+
 
 
 

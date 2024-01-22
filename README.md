@@ -12,9 +12,23 @@ Implementation of MoE Mamba from the paper: "MoE-Mamba: Efficient Selective Stat
 pip install moe-mamba
 ```
 
-# Usage
+## Usage
+
+### `MoEMambaBlock` 
 ```python
-print("hello world")
+import torch 
+from moe_mamba import MoEMambaBlock
+
+x = torch.randn(1, 10, 512)
+model = MoEMambaBlock(
+    dim=512,
+    depth=6,
+    d_state=128,
+    expand=4,
+    num_experts=4,
+)
+out = model(x)
+print(out)
 
 ```
 
