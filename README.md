@@ -1,7 +1,7 @@
 [![Multi-Modality](agorabanner.png)](https://discord.gg/qUtxnK2NMf)
 
 # MoE Mamba
-Implementation of MoE Mamba from the paper: "MoE-Mamba: Efficient Selective State Space Models with Mixture of Experts" in Pytorch and Zeta. 
+Implementation of MoE Mamba from the paper: "MoE-Mamba: Efficient Selective State Space Models with Mixture of Experts" in Pytorch and Zeta. The `SwitchMoE` architecture is from the Switch Transformer paper. And, I still need help with it. If you want to help please join the Agora discord and server and help in the MoE Mamba channel.
 
 [PAPER LINK](https://arxiv.org/abs/2401.04081)
 
