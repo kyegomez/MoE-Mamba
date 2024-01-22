@@ -3,7 +3,7 @@ from moe_mamba.model import MoEMamba
 
 
 # Create a tensor of shape (1, 1024, 512)
-x = torch.randint(0, 10000, (1, 1024))
+x = torch.randint(0, 10000, (1, 512))
 
 # Create a MoEMamba model
 model = MoEMamba(
@@ -14,7 +14,6 @@ model = MoEMamba(
     causal=True,
     shared_qk=True,
     exact_window_size=True,
-    heads=8,
     dim_head=64,
     m_expand=4,
     num_experts=4,

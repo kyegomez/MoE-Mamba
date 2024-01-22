@@ -198,7 +198,6 @@ class MoEMambaBlock(nn.Module):
         dropout: float = 0.1,
         shared_qk: bool = True,
         exact_window_size: bool = False,
-        heads: int = None,
         dim_head: int = None,
         m_expand: int = 4,
         num_experts: int = 4,
@@ -212,7 +211,6 @@ class MoEMambaBlock(nn.Module):
         self.causal = causal
         self.shared_qk = shared_qk
         self.exact_window_size = exact_window_size
-        self.heads = heads
         self.dim_head = dim_head
         self.m_expand = m_expand
         self.num_experts = num_experts
@@ -301,8 +299,7 @@ class MoEMamba(nn.Module):
         dropout: float = 0.1,
         shared_qk: bool = True,
         exact_window_size: bool = False,
-        heads: int = None,
-        dim_head: int = None,
+        dim_head: int = 64,
         m_expand: int = 4,
         num_experts: int = 4,
         *args,
@@ -319,7 +316,6 @@ class MoEMamba(nn.Module):
             dropout=dropout,
             shared_qk=shared_qk,
             exact_window_size=exact_window_size,
-            heads=heads,
             dim_head=dim_head,
             m_expand=m_expand,
             num_experts=num_experts,
@@ -343,5 +339,6 @@ class MoEMamba(nn.Module):
 
         """
         x = self.emb(x)
+        print(x.shape)
         x = self.mamba_block(x)
         return self.to_logits(x)
