@@ -1,5 +1,5 @@
-import torch 
-from moe_mamba.model import MoEMamba 
+import torch
+from moe_mamba.model import MoEMamba
 
 
 # Create a tensor of shape (1, 1024, 512)

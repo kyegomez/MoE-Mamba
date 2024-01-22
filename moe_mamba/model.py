@@ -51,13 +51,17 @@ class SwitchGate(nn.Module):
         top_k_scores, top_k_indices = gate_scores.topk(1, dim=-1)
 
         # Mask to enforce sparsity
-        mask = torch.zeros_like(gate_scores).scatter_(1, top_k_indices, 1)
+        mask = torch.zeros_like(gate_scores).scatter_(
+            1, top_k_indices, 1
+        )
 
         # Combine gating scores with the mask
         masked_gate_scores = gate_scores * mask
 
         # Denominators
-        denominators = masked_gate_scores.sum(0, keepdim=True) + self.epsilon
+        denominators = (
+            masked_gate_scores.sum(0, keepdim=True) + self.epsilon
+        )
 
         # Norm gate scores to sum to the capacity
         gate_scores = (masked_gate_scores / denominators) * capacity
@@ -146,7 +150,9 @@ class SwitchMoE(nn.Module):
 
         """
         # (batch_size, seq_len, num_experts)
-        gate_scores, loss = self.gate(x, use_aux_loss=self.use_aux_loss)
+        gate_scores, loss = self.gate(
+            x, use_aux_loss=self.use_aux_loss
+        )
 
         # Dispatch to experts
         expert_outputs = [expert(x) for expert in self.experts]
@@ -161,7 +167,9 @@ class SwitchMoE(nn.Module):
             expert_outputs, dim=-1
         )  # (batch_size, seq_len, output_dim, num_experts)
         if torch.isnan(stacked_expert_outputs).any():
-            stacked_expert_outputs[torch.isnan(stacked_expert_outputs)] = 0
+            stacked_expert_outputs[
+                torch.isnan(stacked_expert_outputs)
+            ] = 0
 
         # Combine expert outputs and gating scores
         moe_output = torch.sum(
@@ -174,7 +182,7 @@ class SwitchMoE(nn.Module):
 class MoEMambaBlock(nn.Module):
     """
     MoEMambaBlock is a module that combines MambaBlock and SwitchMoE layers.
-    
+
     Args:
         dim (int): The input dimension.
         depth (int): The number of MambaBlock layers.
@@ -188,6 +196,7 @@ class MoEMambaBlock(nn.Module):
         m_expand (int, optional): The expansion factor for the hidden dimension. Defaults to 4.
         num_experts (int, optional): The number of experts in the SwitchMoE layer. Defaults to 4.
     """
+
     def __init__(
         self,
         dim,
@@ -213,7 +222,7 @@ class MoEMambaBlock(nn.Module):
         self.dim_head = dim_head
         self.m_expand = m_expand
         self.num_experts = num_experts
-        
+
         self.layers = nn.ModuleList([])
         self.ffn_layers = nn.ModuleList([])
         self.hidden_dim = dim * m_expand
@@ -241,10 +250,10 @@ class MoEMambaBlock(nn.Module):
     def forward(self, x):
         """
         Forward pass of the MoEMambaBlock module.
-        
+
         Args:
             x (torch.Tensor): The input tensor.
-        
+
         Returns:
             torch.Tensor: The output tensor.
         """
@@ -252,13 +261,6 @@ class MoEMambaBlock(nn.Module):
             x = mamba(x)
             x, _ = moe(x)
         return x
-
-
-
-
-
-
-
 
 
 class MoEMamba(nn.Module):
